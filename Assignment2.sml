@@ -93,7 +93,7 @@ fun activatelink(state : int*int*int*int*int*char*char*char) = createlink(#1 sta
 fun append( state : int*int*int*int*int*char*char*char, sentence) =let val _=TextIO.output (output, sentence) in state end;
 
 fun parse( state : int*int*int*int*int*char*char*char) = let val c = TextIO.input1 input  in case c of 
- None => append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #"\n" , #"\n" ))) 
+ NONE => append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #"\n" , #"\n" )))  
 | SOME c_ => parse(append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state, c_)))) end;
 
 fun main() = parse((1,0,0,0,0, #"\n", #"\n", #"\n"));
