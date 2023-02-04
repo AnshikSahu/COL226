@@ -52,7 +52,7 @@ fun linkdeactivate(state : int*int*int*int*int*char*char*char) = ((#1 state, #2 
 
 fun errorcheck(state : int*int*int*int*int*char*char*char) = if #1 state <>1 then if linkactive(state) then let val temp=linkdeactivate(state) in (#1 temp, "ERROR"^ #2 temp) end
  else (state,"ERROR") else (state,"");
-fun reset(state : int*int*int*int*int*char*char*char, str) = ((1,#2 state,0,#3 state,#4 state,#5 state mod 32, #6 state, #7 state, #8 state),str ^ "\n");
+fun reset(state : int*int*int*int*int*char*char*char, str) = ((1,#2 state,0,#4 state,#5 state mod 32, #6 state, #7 state, #8 state),str ^ "\n");
 fun completereset(state : int*int*int*int*int*char*char*char, str) = let 
 val temp1 = if indentation(state) > 0 then deacactivateindentation(state) else (state,"")
 val temp2 = if headingactive(state) then deactivateheading(#1 temp1) else (#1 temp1,"")
@@ -64,12 +64,18 @@ val temp7 = if paragraphactive(state) then deactivateparagraph(#1 temp6) else (#
 val temp8 = if underlineactive(state) then deactivateunderline(#1 temp7) else (#1 temp7,"")
  in (#1 temp8, str ^ #2 temp4 ^ #2 temp5 ^ #2 temp8 ^ #2 temp6 ^ #2 temp7 ^ #2 temp3 ^ #2 temp2 ^ #2 temp1 ^ "\n" ) end;
 
+
+
 fun matchpattern(state : int*int*int*int*int*char*char*char) = if #8 state = #"\n" then 
 if #7 state = #"\n" then completereset(errorcheck(state)) else reset(errorcheck(state))
 else if #7 state= #"\n" andalso #8 state = #"#" then increaseheadinglevel(state) 
 else if deciding(state) andalso headingactive(state) andalso #8 state = #"#" then increaseheadinglevel(state)
 else if deciding(state) andalso headingactive(state) andalso #7 state = #"#" then let val temp1=addheading(state) val temp2=matchpattern(#1 temp1) in (#1 temp2, #2 temp1 ^ #2 temp2) end
 else (state, String.str (#8 state));
+
+
+
+
 
 fun indent(state : int*int*int*int*int*char*char*char,n) = if TextIO.inputChar input = #">" then indent((#1 state, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),n+1)
 else if n > #2 state then let val temp=matchpattern(state) in (#1 temp, addquote(n-#2 state,"") ^ #2 temp) end
