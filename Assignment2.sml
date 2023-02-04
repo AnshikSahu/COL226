@@ -64,14 +64,14 @@ val temp7 = if paragraphactive(state) then deactivateparagraph(#1 temp6) else (#
 val temp8 = if underlineactive(state) then deactivateunderline(#1 temp7) else (#1 temp7,"")
  in (#1 temp8, str ^ #2 temp4 ^ #2 temp5 ^ #2 temp8 ^ #2 temp6 ^ #2 temp7 ^ #2 temp3 ^ #2 temp2 ^ #2 temp1) end;
 
-fun matchpattern(state : int*int*int*int*int*char*char*char) = if #8 state = # "\n" then 
-if #7 state = # "\n" then completereset(errorcheck(state)) else reset(errorcheck(state))
-else if #7 state= # "\n" andalso #8 state = # "#" then increaseheadinglevel(state) 
-else if deciding andalso headingactive andalso #8 state = # "#" then increaseheadinglevel(state)
-else if deciding andalso headingactive andalso #7 state = # "#" then let val temp1=addheading(state) val temp2=matchpattern(#1 temp1)
+fun matchpattern(state : int*int*int*int*int*char*char*char) = if #8 state = #"\n" then 
+if #7 state = #"\n" then completereset(errorcheck(state)) else reset(errorcheck(state))
+else if #7 state= #"\n" andalso #8 state = #"#" then increaseheadinglevel(state) 
+else if deciding andalso headingactive andalso #8 state = #"#" then increaseheadinglevel(state)
+else if deciding andalso headingactive andalso #7 state = #"#" then let val temp1=addheading(state) val temp2=matchpattern(#1 temp1)
 else (state, #8 state);
 
-fun indent(state : int*int*int*int*int*char*char*char,n) = if TextIO.inputChar input = # ">" then indent((#1 state, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),n+1)
+fun indent(state : int*int*int*int*int*char*char*char,n) = if TextIO.inputChar input = #">" then indent((#1 state, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),n+1)
 else if n > #2 state then let val temp=matchpattern(state) in (#1 temp, addquote(n-#2 state,"") ^ #2 temp) end
 else matchpattern(state);
 fun activateindentation(state : int*int*int*int*int*char*char*char) =indent((#1 state, #2 state, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),1);
@@ -85,7 +85,7 @@ fun activatelink(state : int*int*int*int*int*char*char*char) = createlink(#1 sta
 fun append( state : int*int*int*int*int*char*char*char, sentence) =let val _=TextIO.output (output, sentence) in state end;
 
 fun parse( state : int*int*int*int*int*char*char*char) = let val c = TextIO.inputChar input in
- if (c = NONE) then append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, # "\n", # "\n" , # "\n" ))) 
+ if (c = NONE) then append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #"\n" , #"\n" ))) 
  else parse(append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state, c)))) end;
 
 fun main() = parse((1,0,0,0,0, "\n", "\n", "\n"));
