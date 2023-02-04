@@ -94,6 +94,6 @@ fun parse( state : int*int*int*int*int*char*char*char) = let val c = TextIO.inpu
  if (c = NONE) then append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #"\n" , #"\n" ))) 
  else parse(append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state, c_)))) end;
 
-fun main() = parse((1,0,0,0,0, "\n", "\n", "\n"));
+fun main() = parse((1,0,0,0,0, #"\n", #"\n", #"\n"));
 val _ = TextIO.closeOut output;
 val _ = TextIO.closeIn input;
