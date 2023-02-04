@@ -50,7 +50,7 @@ fun tabledeactivate(state : int*int*int*int*int*char*char*char) = ((#1 state, #2
 
 fun linkdeactivate(state : int*int*int*int*int*char*char*char) = ((#1 state, #2 state, #3 state, #4 state, #5 state - 32, #6 state, #7 state, #8 state),"</a>");
 
-fun errorcheck(state : int*int*int*int*int*char*char*char) = if #1 state <>1 then if linkactive(state) then let val temp=linkdeactivate(state) in (#1 temp, "ERROR"^#@ temp) end
+fun errorcheck(state : int*int*int*int*int*char*char*char) = if #1 state <>1 then if linkactive(state) then let val temp=linkdeactivate(state) in (#1 temp, "ERROR"^#2 temp) end
  else (state,"ERROR") else (state,"");
 fun reset(state : int*int*int*int*int*char*char*char, str) = ((1,#2 state,0,#3 state,#4 state,#5 state mod 32, #6 state, #7 state, #8 state),str^"\n");
 fun completereset(state : int*int*int*int*int*char*char*char, str) = let 
