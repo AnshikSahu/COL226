@@ -67,8 +67,8 @@ val temp8 = if underlineactive(state) then deactivateunderline(#1 temp7) else (#
 fun matchpattern(state : int*int*int*int*int*char*char*char) = if #8 state = #"\n" then 
 if #7 state = #"\n" then completereset(errorcheck(state)) else reset(errorcheck(state))
 else if #7 state= #"\n" andalso #8 state = #"#" then increaseheadinglevel(state) 
-else if deciding andalso headingactive andalso #8 state = #"#" then increaseheadinglevel(state)
-else if deciding andalso headingactive andalso #7 state = #"#" then let val temp1=addheading(state) val temp2=matchpattern(#1 temp1)
+else if deciding(state) andalso headingactive(state) andalso #8 state = #"#" then increaseheadinglevel(state)
+else if deciding(state) andalso headingactive(state) andalso #7 state = #"#" then let val temp1=addheading(state) val temp2=matchpattern(#1 temp1)
 else (state, #8 state);
 
 fun indent(state : int*int*int*int*int*char*char*char,n) = if TextIO.inputChar input = #">" then indent((#1 state, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),n+1)
