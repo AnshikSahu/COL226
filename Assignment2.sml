@@ -44,8 +44,8 @@ fun activateparagraph(state : int*int*int*int*int*char*char*char) = ((#1 state, 
 fun deactivateparagraph(state : int*int*int*int*int*char*char*char) = ((#1 state, #2 state, #3 state, #4 state, #5 state - 8, #6 state, #7 state, #8 state),"</p>");
 
 fun activatetable(state : int*int*int*int*int*char*char*char) = if paragraphactive(state) then 
-((#1 state, #2 state, #3 state, #4 state, #5 state + 16, #6 state, #7 state, #8 state),"<CENTER><TABLE border="^Int.tostring(1)^">")
-else ((#1 state, #2 state, #3 state, #4 state, #5 state + 16, #6 state, #7 state, #8 state),"<p><CENTER><TABLE border="^Int.tostring(1)^">");
+((#1 state, #2 state, #3 state, #4 state, #5 state + 16, #6 state, #7 state, #8 state),"<CENTER><TABLE border="^Int.toString(1)^">")
+else ((#1 state, #2 state, #3 state, #4 state, #5 state + 16, #6 state, #7 state, #8 state),"<p><CENTER><TABLE border="^Int.toString(1)^">");
 fun tabledeactivate(state : int*int*int*int*int*char*char*char) = ((#1 state, #2 state, #3 state, #4 state, #5 state - 16, #6 state, #7 state, #8 state),"</TABLE></CENTER>");
 
 fun linkdeactivate(state : int*int*int*int*int*char*char*char) = ((#1 state, #2 state, #3 state, #4 state, #5 state - 32, #6 state, #7 state, #8 state),"</a>");
