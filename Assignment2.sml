@@ -62,14 +62,14 @@ val temp5 = if italicactive(state) then deactivateitalic(#1 temp4) else (#1 temp
 val temp6 = if tableactive(state) then tabledeactivate(#1 temp5) else (#1 temp5,"")
 val temp7 = if paragraphactive(state) then deactivateparagraph(#1 temp6) else (#1 temp6,"")
 val temp8 = if underlineactive(state) then deactivateunderline(#1 temp7) else (#1 temp7,"")
- in (#1 temp8, str ^ #2 temp4 ^ #2 temp5 ^ #2 temp8 ^ #2 temp6 ^ #2 temp7 ^ #2 temp3 ^ #2 temp2 ^ #2 temp1) end;
+ in (#1 temp8, str ^ #2 temp4 ^ #2 temp5 ^ #2 temp8 ^ #2 temp6 ^ #2 temp7 ^ #2 temp3 ^ #2 temp2 ^ #2 temp1 ^ "\n" ) end;
 
 fun matchpattern(state : int*int*int*int*int*char*char*char) = if #8 state = #"\n" then 
 if #7 state = #"\n" then completereset(errorcheck(state)) else reset(errorcheck(state))
 else if #7 state= #"\n" andalso #8 state = #"#" then increaseheadinglevel(state) 
 else if deciding(state) andalso headingactive(state) andalso #8 state = #"#" then increaseheadinglevel(state)
 else if deciding(state) andalso headingactive(state) andalso #7 state = #"#" then let val temp1=addheading(state) val temp2=matchpattern(#1 temp1) in (#1 temp2, #2 temp1 ^ #2 temp2) end
-else (state, String.str #8 state);
+else (state, String.str (#8 state));
 
 fun indent(state : int*int*int*int*int*char*char*char,n) = if TextIO.inputChar input = #">" then indent((#1 state, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),n+1)
 else if n > #2 state then let val temp=matchpattern(state) in (#1 temp, addquote(n-#2 state,"") ^ #2 temp) end
