@@ -77,9 +77,9 @@ else (state, String.str (#8 state));
 
 
 
-fun indent(state : int*int*int*int*int*char*char*char,n) = if TextIO.inputChar input = #">" then indent((#1 state, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),n+1)
-else if n > #2 state then let val temp=matchpattern(state) in (#1 temp, addquote(n-#2 state,"") ^ #2 temp) end
-else matchpattern(state);
+fun indent(state : int*int*int*int*int*char*char*char,n) = let val c= TextIO.inputChar input in if c = #">" then indent((#1 state, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),n+1)
+else if n > #2 state then let val temp=matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state,c)) in (#1 temp, addquote(n- ( #2 state),"") ^ #2 temp) end
+else matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state,c)) end;
 fun activateindentation(state : int*int*int*int*int*char*char*char) =indent((#1 state, #2 state, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),1);
 
 fun underline(state : int*int*int*int*int*char*char*char) = (state,"");
