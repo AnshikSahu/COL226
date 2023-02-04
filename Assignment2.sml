@@ -1,5 +1,5 @@
 val input = TextIO.openIn "input.txt";
-val output = TextIO.openOut "output.txt";
+val output = TextIO.openAppend "output.txt";
 
 fun deciding(state : int*int*int*int*int*char*char*char) = #1 state = 0;
 fun reading(state : int*int*int*int*int*char*char*char) = #1 state = 1;
