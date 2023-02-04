@@ -69,7 +69,7 @@ if #7 state = #"\n" then completereset(errorcheck(state)) else reset(errorcheck(
 else if #7 state= #"\n" andalso #8 state = #"#" then increaseheadinglevel(state) 
 else if deciding(state) andalso headingactive(state) andalso #8 state = #"#" then increaseheadinglevel(state)
 else if deciding(state) andalso headingactive(state) andalso #7 state = #"#" then let val temp1=addheading(state) val temp2=matchpattern(#1 temp1) in (#1 temp2, #2 temp1 ^ #2 temp2) end
-else (state, #8 state);
+else (state, String.str #8 state);
 
 fun indent(state : int*int*int*int*int*char*char*char,n) = if TextIO.inputChar input = #">" then indent((#1 state, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),n+1)
 else if n > #2 state then let val temp=matchpattern(state) in (#1 temp, addquote(n-#2 state,"") ^ #2 temp) end
