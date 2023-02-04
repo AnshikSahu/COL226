@@ -25,7 +25,7 @@ fun deactivateheading(state : int*int*int*int*int*char*char*char) = ((#1 state, 
 fun activatelist(state : int*int*int*int*int*char*char*char) = ((#1 state, #2 state, #3 state, 1, #5 state, #6 state, #7 state, #8 state),"");
 fun addorderedlist(state : int*int*int*int*int*char*char*char) = ((#1 state, #2 state, #3 state, (#4 state)*2 + 1, #5 state, #6 state, #7 state, #8 state),"<ol>");
 fun addunorderedlist(state : int*int*int*int*int*char*char*char) = ((#1 state, #2 state, #3 state, (#4 state)*2, #5 state, #6 state, #7 state, #8 state),"<ul>");
-fun checkforlist(state : int*int*int*int*int*char*char*char) = ;
+fun checkforlist(state : int*int*int*int*int*char*char*char) = (state,"");
 fun endpreviouslist(state : int*int*int*int*int*char*char*char) = if (#4 state div 2) mod 2 = 1 then 
 if #4 state mod 2 = 1 then ((#1 state, #2 state, #3 state, 0, #5 state, #6 state, #7 state, #8 state),"</ol>")
 else ((#1 state, #2 state, #3 state, 0, #5 state, #6 state, #7 state, #8 state),"</ul>")
@@ -76,10 +76,10 @@ else if n > #2 state then let val temp=matchpattern(state) in (#1 temp, addquote
 else matchpattern(state);
 fun activateindentation(state : int*int*int*int*int*char*char*char) =indent((#1 state, #2 state, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),1);
 
-fun underline(state : int*int*int*int*int*char*char*char) = ;
+fun underline(state : int*int*int*int*int*char*char*char) = (state,"");
 fun activateunderline(state : int*int*int*int*int*char*char*char) = underline(#1 state, #2 state, #3 state, #4 state, #5 state + 4, #6 state, #7 state, #8 state);
 
-fun createlink(state : int*int*int*int*int*char*char*char) = ;
+fun createlink(state : int*int*int*int*int*char*char*char) = (state,"");
 fun activatelink(state : int*int*int*int*int*char*char*char) = createlink(#1 state, #2 state, #3 state, #4 state, #5 state + 32, #6 state, #7 state, #8 state);
 
 fun append( state : int*int*int*int*int*char*char*char, sentence) =let val _=TextIO.output (output, sentence) in state end;
