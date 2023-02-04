@@ -81,7 +81,7 @@ fun indent(state : int*int*int*int*int*char*char*char,n) = let val c_= TextIO.in
 NONE => (state,"")
 | SOME c => if c = #">" then indent((#1 state, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),n+1)
 else if n > #2 state then let val temp=matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state,c)) in (#1 temp, addquote(n- ( #2 state),"") ^ #2 temp) end
-else matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state,c)) end;
+else matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state,c))end ;
 fun activateindentation(state : int*int*int*int*int*char*char*char) =indent((#1 state, #2 state, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),1);
 
 fun underline(state : int*int*int*int*int*char*char*char) = (state,"");
@@ -90,11 +90,11 @@ fun activateunderline(state : int*int*int*int*int*char*char*char) = underline(#1
 fun createlink(state : int*int*int*int*int*char*char*char) = (state,"");
 fun activatelink(state : int*int*int*int*int*char*char*char) = createlink(#1 state, #2 state, #3 state, #4 state, #5 state + 32, #6 state, #7 state, #8 state);
 
-fun append( state : int*int*int*int*int*char*char*char, sentence) =let val _=TextIO.output (output, sentence) in state end;
+fun append( state : int*int*int*int*int*char*char*char, sentence) =let val _= if sentence="" then print("") else TextIO.output (output, sentence) in state end;
 
 fun parse( state : int*int*int*int*int*char*char*char) = let val c = TextIO.input1 input  in case c of 
  NONE => append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #"\n" , #"\n" )))  
-| SOME c_ => parse(append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state, c_)))) end;
+| SOME c_ => parse(append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state, c_)))) end ;
 
 fun main() = parse((1,0,0,0,0, #"\n", #"\n", #"\n"));
 val _ = TextIO.closeOut output;
