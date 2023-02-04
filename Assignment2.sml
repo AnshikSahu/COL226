@@ -50,9 +50,9 @@ fun tabledeactivate(state : int*int*int*int*int*char*char*char) = ((#1 state, #2
 
 fun linkdeactivate(state : int*int*int*int*int*char*char*char) = ((#1 state, #2 state, #3 state, #4 state, #5 state - 32, #6 state, #7 state, #8 state),"</a>");
 
-fun errorcheck(state : int*int*int*int*int*char*char*char) = if #1 state <>1 then if linkactive(state) then let val temp=linkdeactivate(state) in (#1 temp, "ERROR"^#2 temp) end
+fun errorcheck(state : int*int*int*int*int*char*char*char) = if #1 state <>1 then if linkactive(state) then let val temp=linkdeactivate(state) in (#1 temp, "ERROR"^ #2 temp) end
  else (state,"ERROR") else (state,"");
-fun reset(state : int*int*int*int*int*char*char*char, str) = ((1,#2 state,0,#3 state,#4 state,#5 state mod 32, #6 state, #7 state, #8 state),str^"\n");
+fun reset(state : int*int*int*int*int*char*char*char, str) = ((1,#2 state,0,#3 state,#4 state,#5 state mod 32, #6 state, #7 state, #8 state),str ^ "\n");
 fun completereset(state : int*int*int*int*int*char*char*char, str) = let 
 val temp1 = if indentation>0 then deacactivateindentation(state) else (state,"")
 val temp2 = if headingactive(state) then deactivateheading(#1 temp1) else (#1 temp1,"")
@@ -72,7 +72,7 @@ else if deciding andalso headingactive andalso #7 state = # "#" then let val tem
 else (state, #8 state);
 
 fun indent(state : int*int*int*int*int*char*char*char,n) = if TextIO.inputChar input = # ">" then indent((#1 state, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),n+1)
-else if n > #2 state then let val temp=matchpattern(state) in (#1 temp, addquote(n-#2 state,"")^#2 temp) end
+else if n > #2 state then let val temp=matchpattern(state) in (#1 temp, addquote(n-#2 state,"") ^ #2 temp) end
 else matchpattern(state);
 fun activateindentation(state : int*int*int*int*int*char*char*char) =indent((#1 state, #2 state, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),1);
 
