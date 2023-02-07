@@ -17,13 +17,13 @@ fun tableactive(state : int*int*int*int*int*char*char*char) = (#5 state div 16) 
 
 fun addquote(n : int, s : string) = if n = 0 then s else addquote(n - 1,  "<blockquote>" ^ s);
 fun endquote(n : int, s : string)= if n = 0 then s else endquote(n - 1, s ^ "</blockquote>");
-fun deacactivateindentation(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = ((1, 0, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state), endquote(#2 state, "</p>"), l, lout);
+fun deacactivateindentation(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = ((1, 0, #3 state, #4 state, #5 state-8, #6 state, #7 state, #8 state), endquote(#2 state, "</p>"), l, lout);
 fun indent(state : int*int*int*int*int*char*char*char,n, l : char list, lout : string list) = case l of
 [] => (state,"",l,lout)
 | c :: xs => if c = #">" then indent((0, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),n+1,xs,lout)
 else if n > #2 state then let val s= if indentation(state)>0 then "</p>" else "" in ((1,#2 state,#3 state,#4 state, #5 state,#6 state, #7 state, #8 state), s ^ addquote(n- ( #2 state),"<p>") ,l,lout) end
 else ((1, #2 state, #3 state, #4 state, #5 state,#6 state, #7 state, #8 state),"",l,lout);
-fun activateindentation(state : int*int*int*int*int*char*char*char,l : char list, lout : string list) =indent((0, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),1,l,lout);
+fun activateindentation(state : int*int*int*int*int*char*char*char,l : char list, lout : string list) =indent((0, #2 state + 1, #3 state, #4 state, #5 state+8, #6 state, #7 state, #8 state),1,l,lout);
 
 fun increaseheadinglevel(state : int*int*int*int*int*char*char*char,l : char list,lout : string list) =((0, #2 state, #3 state + 1, #4 state, #5 state, #6 state, #7 state, #8 state),"", l ,lout);
 fun addheading(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ( (1,#2 state,#3 state,#4 state, #5 state, #6 state, #7 state, #8 state), "<h" ^ Int.toString(#3 state) ^ ">", l,lout);
@@ -47,7 +47,7 @@ fun deactivateitalic(state : int*int*int*int*int*char*char*char, l : char list, 
 
 fun deactivateunderline(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = ((#1 state, #2 state, #3 state, #4 state, #5 state - 4, #6 state, #7 state, #8 state),"</u>", l,lout);
 
-fun activateparagraph(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = ((#1 state, #2 state, #3 state, #4 state, #5 state + 8, #6 state, #7 state, #8 state),"<p>", l,lout);
+fun activateparagraph(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = ((#1 state, #2 state, #3 state, #4 state, #5 state + 8,#"\n", #6 state, #7 state),"<p>", #8 state :: l,lout);
 fun deactivateparagraph(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = ((#1 state, #2 state, #3 state, #4 state, #5 state - 8, #6 state, #7 state, #8 state),"</p>", l,lout);
 
 fun activatetable(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = if paragraphactive(state) then 
@@ -80,6 +80,7 @@ let val temp1=addheading(state,l,lout)  val temp3=matchpattern(#1 temp1, #3 temp
 else if headingactive(state) andalso reading(state) then (state, String.str (#8 state),l,lout)
 else if #7 state= #"\n" andalso #8 state = #">" andalso tableactive(state)= false then activateindentation(state,l,lout)
 else if indentation(state)>0 andalso reading(state) then (state, String.str (#8 state),l,lout)
+else if paragraphactive(state)= false then activateparagraph(state,l,lout)
 else (state,"@",l,lout);
 
 
