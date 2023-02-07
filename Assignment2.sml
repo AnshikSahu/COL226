@@ -85,7 +85,7 @@ else (state,"@",l,lout);
 fun indent(state : int*int*int*int*int*char*char*char,n, l : char list, lout : string list) = case l of
 [] => (state,"",l,lout)
 | c :: xs => if c = #">" then indent((0, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),n+1,xs,lout)
-else if n > #2 state then let val s= if indentation>0 then "</p>" else "" val temp=matchpattern((1, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state,c),xs,lout) in (#1 temp, s ^ addquote(n- ( #2 state),"<p>") ^ #2 temp,#3 temp,#4 temp) end
+else if n > #2 state then let val s= if indentation(state)>0 then "</p>" else "" val temp=matchpattern((1, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state,c),xs,lout) in (#1 temp, s ^ addquote(n- ( #2 state),"<p>") ^ #2 temp,#3 temp,#4 temp) end
 else matchpattern((1, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state,c),xs,lout);
 fun activateindentation(state : int*int*int*int*int*char*char*char,l : char list, lout : string list) =indent((0, #2 state, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),1,l,lout);
 
