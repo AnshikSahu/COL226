@@ -91,7 +91,13 @@ fun activateunderline(state : int*int*int*int*int*char*char*char,l : char list, 
 fun createlink(state : int*int*int*int*int*char*char*char, l : char list, lout : char list) = (state,"", l, lout);
 fun activatelink(state : int*int*int*int*int*char*char*char, l : char list, lout : char list) = createlink((#1 state, #2 state, #3 state, #4 state, #5 state + 32, #6 state, #7 state, #8 state), l,lout);
 
+<<<<<<< HEAD
+fun append( state : int*int*int*int*int*char*char*char, sentence) =let val
+  _=print("***"^sentence^"***") val _= if
+  sentence="" then print("") else TextIO.output (output, sentence) in state end;
+=======
 fun append( state : int*int*int*int*int*char*char*char, sentence,lin : char list, lout : char list) = (state,lin, sentence :: lout);
+>>>>>>> 874ae8b89a2c103c108c3b250061b44b978d2c44
 
 fun parse( state : int*int*int*int*int*char*char*char, l : char list , lout : char list) = case c of 
  [] => append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #"\n" , #"\n" ),l, lout))  
