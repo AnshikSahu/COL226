@@ -1,5 +1,6 @@
 val input = TextIO.openIn "input.txt";
 val output = TextIO.openAppend "output.txt";
+val l= explode(TextIO.inputAll input);
 
 fun deciding(state : int*int*int*int*int*char*char*char) = #1 state = 0;
 fun reading(state : int*int*int*int*int*char*char*char) = #1 state = 1;
@@ -90,7 +91,9 @@ fun activateunderline(state : int*int*int*int*int*char*char*char) = underline(#1
 fun createlink(state : int*int*int*int*int*char*char*char) = (state,"");
 fun activatelink(state : int*int*int*int*int*char*char*char) = createlink(#1 state, #2 state, #3 state, #4 state, #5 state + 32, #6 state, #7 state, #8 state);
 
-fun append( state : int*int*int*int*int*char*char*char, sentence) =let val _= if sentence="" then print("") else TextIO.output (output, sentence) in state end;
+fun append( state : int*int*int*int*int*char*char*char, sentence) =let val
+  _=print("***"^sentence^"***") val _= if
+  sentence="" then print("") else TextIO.output (output, sentence) in state end;
 
 fun parse( state : int*int*int*int*int*char*char*char) = let val c = TextIO.input1 input  in case c of 
  NONE => append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #"\n" , #"\n" )))  
