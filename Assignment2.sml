@@ -101,15 +101,9 @@ fun parse( state : int*int*int*int*int*char*char*char, l : char list , lout : st
 | c :: xs => parse(append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state, c),xs, lout)));
 
 fun main() = parse((1,0,0,0,0, #"\n", #"\n", #"\n"),l,[]);
-<<<<<<< HEAD
 fun write(state : int*int*int*int*int*char*char*char, l : char list , lout : string list) =let val output = TextIO.openOut "output.txt"
         fun writestrings [] = TextIO.closeOut output
           | writestrings (x::xs) = (TextIO.output (output, x ); writestrings xs) in writestrings(lout) end;
-=======
-fun write(state : ,l : char list ,strings : string list) =let val output = TextIO.openOut "output.txt"
-        fun writestrings [] = TextIO.closeOut output
-          | writestrings (x::xs) = (TextIO.output (output, x ); writestrings xs) in writestrings(strings) end;
->>>>>>> 8cd9a09a90d6cb6945bab76053dd1bdab4eb5b51
 val _=write(main());
 val _ = TextIO.closeOut output;
 val _ = TextIO.closeIn input;
