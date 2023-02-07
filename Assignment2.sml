@@ -65,7 +65,7 @@ val temp7 = if paragraphactive(state) then deactivateparagraph(#1 temp6, #3 temp
 val temp8 = if underlineactive(state) then deactivateunderline(#1 temp7, #3 temp7, #4 temp7) else (#1 temp7,"",#3 temp7, #4 temp7)
  in (#1 temp8, str ^ #2 temp4 ^ #2 temp5 ^ #2 temp8 ^ #2 temp6 ^ #2 temp7 ^ #2 temp3 ^ #2 temp2 ^ #2 temp1 ^ "\n", #3 temp8, #4 temp8 ) end;
 
-
+fun activateindentation(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = (state,"",l,lout);
 
 fun matchpattern(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = if #8 state = #"\n" then 
 if #7 state = #"\n" then completereset(errorcheck(state, l,lout)) else reset(errorcheck(state, l,lout))
