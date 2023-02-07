@@ -72,12 +72,12 @@ val temp8 = if underlineactive(state) then deactivateunderline(#1 temp7, #3 temp
 
 fun matchpattern(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = if #8 state = #"\n" then 
 if #7 state = #"\n" then completereset(errorcheck(state, l,lout)) else reset(errorcheck(state, l,lout))
-else if #7 state= #"\n" andalso #8 state = #"#" then increaseheadinglevel(state, l,lout) 
+else if #7 state= #"\n" andalso #8 state = #"#" then let val temp1= completereset(errorcheck(state,l,lout)) val temp2=increaseheadinglevel(#1 temp1,#3 temp1,#4 temp1) in (#1 temp2, #2 temp1 ^ #2 temp2, #3 temp2, #4 temp2) 
 else if deciding(state) andalso headingactive(state) andalso #8 state = #"#" then increaseheadinglevel(state, l,lout)
 else if deciding(state) andalso headingactive(state) andalso #7 state = #"#" then 
 let val temp1=addheading(state,l,lout)  val temp3=matchpattern(#1 temp1, #3 temp1,#4 temp1) in (#1 temp3, #2 temp1 ^ #2temp3, #3 temp3, #4 temp3) end
 else if headingactive(state) andalso reading(state) then (state, String.str (#8 state),l,lout)
-else if #7 state= #"\n" andalso #8 state = #">" andalso tableactive(state)= false then activateindentation(state,l,lout)
+else if #7 state= #"\n" andalso #8 state = #">" andalso tableactive(state)= false then let val temp1=if indentation(state)=0 then completereset(errorcheck(state,l,lout)) else (state,"",l,lout) val temp2=activateindentation(#1 temp1,#3 temp1,#4 temp1) in (#1 temp2, #2 temp1 ^ #2 temp2, #3 temp2, #4 temp2)
 else if indentation(state)>0 andalso reading(state) then (state, String.str (#8 state),l,lout)
 else if paragraphactive(state)= false then activateparagraph(state,l,lout)
 else (state,"@",l,lout);
@@ -101,9 +101,9 @@ fun parse( state : int*int*int*int*int*char*char*char, l : char list , lout : st
 | c :: xs => parse(append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state, c),xs, lout)));
 
 fun main() = parse((1,0,0,0,0, #"\n", #"\n", #"\n"),l,[]);
-fun write(state : int*int*int*int*int*char*char*char, l : char list , lout : string list) =let val output = TextIO.openOut "output.txt"
+fun write(lout) =let val output = TextIO.openOut "output.txt"
         fun writestrings [] = TextIO.closeOut output
           | writestrings (x::xs) = (TextIO.output (output, x ); writestrings xs) in writestrings(lout) end;
-val _=write(main());
-val _ = TextIO.closeOut output;
+fun reverse(state : int*int*int*int*int*char*char*char, l : char list , lout : string list) = rev(lout);
+val _=write(reverse(main()));
 val _ = TextIO.closeIn input;
