@@ -53,7 +53,7 @@ fun linkdeactivate(state : int*int*int*int*int*char*char*char, l : char list, lo
 
 fun errorcheck(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = if #1 state <>1 then if linkactive(state) then let val temp=linkdeactivate(state,l,lout) in (#1 temp, "ERROR"^ #2 temp,#3 temp ,#4 temp) end
  else (state,"ERROR", l,lout) else (state,"", l,lout);
-fun reset(state : int*int*int*int*int*char*char*char, str, l, lout : string list) = let temp=deactivateheading(state,l,lout) in(#1 temp,str^ #2 temp ^ "\n", #3 temp,#4 temp) end;
+fun reset(state : int*int*int*int*int*char*char*char, str, l, lout : string list) = let val temp=deactivateheading(state,l,lout) in(#1 temp,str^ #2 temp ^ "\n", #3 temp,#4 temp) end;
 fun completereset(state : int*int*int*int*int*char*char*char, str, l, lout : string list) = let 
 val temp1 = if indentation(state) > 0 then deacactivateindentation(state, l,lout) else (state,"", l,lout)
 val temp2 = if headingactive(state) then deactivateheading(#1 temp1, #3 temp1,#4 temp1) else (#1 temp1,"", #3 temp1, #4 temp1)
