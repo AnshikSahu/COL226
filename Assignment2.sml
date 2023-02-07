@@ -58,7 +58,7 @@ fun linkdeactivate(state : int*int*int*int*int*char*char*char, l : char list, lo
 
 fun errorcheck(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = if #1 state <>1 then if linkactive(state) then let val temp=linkdeactivate(state,l,lout) in (#1 temp, "ERROR"^ #2 temp,#3 temp ,#4 temp) end
  else (state,"ERROR", l,lout) else (state,"", l,lout);
-fun reset(state : int*int*int*int*int*char*char*char, str, l, lout : string list) = let val temp=deactivateheading(state,l,lout) in(#1 temp,str^ #2 temp ^ "\n", #3 temp,#4 temp) end;
+fun reset(state : int*int*int*int*int*char*char*char, str, l, lout : string list) = let val temp=if headingactive(state) then deactivateheading(state,l,lout) else (state,"",l,lout) in(#1 temp,str^ #2 temp ^ "\n", #3 temp,#4 temp) end;
 fun completereset(state : int*int*int*int*int*char*char*char, str, l, lout : string list) = let 
 val temp1 = if indentation(state) > 0 then deacactivateindentation(state, l,lout) else (state,"", l,lout)
 val temp2 = if headingactive(state) then deactivateheading(#1 temp1, #3 temp1,#4 temp1) else (#1 temp1,"", #3 temp1, #4 temp1)
@@ -70,17 +70,16 @@ val temp7 = if paragraphactive(state) then deactivateparagraph(#1 temp6, #3 temp
 val temp8 = if underlineactive(state) then deactivateunderline(#1 temp7, #3 temp7, #4 temp7) else (#1 temp7,"",#3 temp7, #4 temp7)
  in (#1 temp8, str ^ #2 temp4 ^ #2 temp5 ^ #2 temp8 ^ #2 temp6 ^ #2 temp7 ^ #2 temp3 ^ #2 temp2 ^ #2 temp1 ^ "\n", #3 temp8, #4 temp8 ) end;
 
-fun matchpattern(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = if #8 state = #"\n" then 
-if #7 state = #"\n" then completereset(errorcheck(state, l,lout)) else reset(errorcheck(state, l,lout))
-else if #7 state= #"\n" andalso #8 state = #"#" then let val temp1= completereset(errorcheck(state,l,lout)) val temp2=increaseheadinglevel(#1 temp1,#3 temp1,#4 temp1) in (#1 temp2, #2 temp1 ^ #2 temp2, #3 temp2, #4 temp2) 
+fun matchpattern(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = if #8 state = #"\n" andalso tableactive(state) = false andalso paragraphactive(state)= false then  reset(errorcheck(state, l,lout)) else if #7 state= #"\n" andalso #8 state= #"\n" then completereset(errorcheck(state, l,lout))
+else if #7 state= #"\n" andalso #8 state = #"#" then let val temp1= completereset(errorcheck(state,l,lout)) val temp2=increaseheadinglevel(#1 temp1,#3 temp1,#4 temp1) in (#1 temp2, #2 temp1 ^ #2 temp2, #3 temp2, #4 temp2) end
 else if deciding(state) andalso headingactive(state) andalso #8 state = #"#" then increaseheadinglevel(state, l,lout)
 else if deciding(state) andalso headingactive(state) andalso #7 state = #"#" then 
 let val temp1=addheading(state,l,lout)  val temp3=matchpattern(#1 temp1, #3 temp1,#4 temp1) in (#1 temp3, #2 temp1 ^ #2temp3, #3 temp3, #4 temp3) end
 else if headingactive(state) andalso reading(state) then (state, String.str (#8 state),l,lout)
-else if #7 state= #"\n" andalso #8 state = #">" andalso tableactive(state)= false then let val temp1=if indentation(state)=0 then completereset(errorcheck(state,l,lout)) else (state,"",l,lout) val temp2=activateindentation(#1 temp1,#3 temp1,#4 temp1) in (#1 temp2, #2 temp1 ^ #2 temp2, #3 temp2, #4 temp2)
+else if #7 state= #"\n" andalso #8 state = #">" andalso tableactive(state)= false then let val temp1=if indentation(state)=0 then completereset(errorcheck(state,l,lout)) else (state,"",l,lout) val temp2=activateindentation(#1 temp1,#3 temp1,#4 temp1) in (#1 temp2, #2 temp1 ^ #2 temp2, #3 temp2, #4 temp2) end
 else if indentation(state)>0 andalso reading(state) then (state, String.str (#8 state),l,lout)
 else if paragraphactive(state)= false then activateparagraph(state,l,lout)
-else (state,"@",l,lout);
+else (state,Char.toString(#8 state),l,lout);
 
 
 
