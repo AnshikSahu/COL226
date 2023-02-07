@@ -22,7 +22,7 @@ fun indent(state : int*int*int*int*int*char*char*char,n, l : char list, lout : s
 [] => (state,"",l,lout)
 | c :: xs => if c = #">" then indent((0, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),n+1,xs,lout)
 else if n > #2 state then let val s= if indentation(state)>0 then "</p>" else "" in ((1,#2 state,#3 state,#4 state, #5 state,#6 state, #7 state, #8 state), s ^ addquote(n- ( #2 state),"<p>") ,l,lout) end
-else ((1, #2 state, #3 state, #4 state, #5 state,#6 state, #7 state, #8 state),l,lout);
+else ((1, #2 state, #3 state, #4 state, #5 state,#6 state, #7 state, #8 state),"",l,lout);
 fun activateindentation(state : int*int*int*int*int*char*char*char,l : char list, lout : string list) =indent((0, #2 state, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),1,l,lout);
 
 fun increaseheadinglevel(state : int*int*int*int*int*char*char*char,l : char list,lout : string list) =((0, #2 state, #3 state + 1, #4 state, #5 state, #6 state, #7 state, #8 state),"", l ,lout);
