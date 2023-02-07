@@ -21,7 +21,7 @@ fun deacactivateindentation(state : int*int*int*int*int*char*char*char, l : char
 
 fun increaseheadinglevel(state : int*int*int*int*int*char*char*char,l : char list,lout : string list) =((0, #2 state, #3 state + 1, #4 state, #5 state, #6 state, #7 state, #8 state),"", l ,lout);
 fun addheading(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ( (1,#2 state,#3 state,#4 state, #5 state, #6 state, #7 state, #8 state), "<h" ^ Int.toString(#3 state) ^ ">", l,lout);
-fun deactivateheading(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((#1 state, #2 state, 0, #4 state, #5 state, #6 state, #7 state, #8 state),"</h" ^ Int.toString(#3 state) ^ ">", l,lout );
+fun deactivateheading(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((1, #2 state, 0, #4 state, #5 state, #6 state, #7 state, #8 state),"</h" ^ Int.toString(#3 state) ^ ">", l,lout );
 
 fun activatelist(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((#1 state, #2 state, #3 state, 1, #5 state, #6 state, #7 state, #8 state),"", l,lout);
 fun addorderedlist(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((#1 state, #2 state, #3 state, (#4 state)*2 + 1, #5 state, #6 state, #7 state, #8 state),"<ol>", l ,lout);
@@ -72,7 +72,7 @@ if #7 state = #"\n" then completereset(errorcheck(state, l,lout)) else reset(err
 else if #7 state= #"\n" andalso #8 state = #"#" then increaseheadinglevel(state, l,lout) 
 else if deciding(state) andalso headingactive(state) andalso #8 state = #"#" then increaseheadinglevel(state, l,lout)
 else if deciding(state) andalso headingactive(state) andalso #7 state = #"#" then 
-let val temp1=addheading(state,l,lout) val temp2= deactivateheading(#1 temp1,#3 temp1,#4 temp1) val temp3=matchpattern(#1 temp2, #3 temp2,#4 temp2) in (#1 temp3, #2 temp1 ^ #2 temp2 ^ #2temp3, #3 temp3, #4 temp3) end
+let val temp1=addheading(state,l,lout)  val temp3=matchpattern(#1 temp1, #3 temp1,#4 temp1) in (#1 temp3, #2 temp1 ^ #2temp3, #3 temp3, #4 temp3) end
 else if headingactive(state) andalso reading(state) then (state, String.str (#8 state),l,lout)
 else (state,"@",l,lout);
 
