@@ -65,8 +65,6 @@ val temp7 = if paragraphactive(state) then deactivateparagraph(#1 temp6, #3 temp
 val temp8 = if underlineactive(state) then deactivateunderline(#1 temp7, #3 temp7, #4 temp7) else (#1 temp7,"",#3 temp7, #4 temp7)
  in (#1 temp8, str ^ #2 temp4 ^ #2 temp5 ^ #2 temp8 ^ #2 temp6 ^ #2 temp7 ^ #2 temp3 ^ #2 temp2 ^ #2 temp1 ^ "\n", #3 temp8, #4 temp8 ) end;
 
-fun activateindentation(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = (state,"",l,lout);
-
 fun matchpattern(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = if #8 state = #"\n" then 
 if #7 state = #"\n" then completereset(errorcheck(state, l,lout)) else reset(errorcheck(state, l,lout))
 else if #7 state= #"\n" andalso #8 state = #"#" then increaseheadinglevel(state, l,lout) 
@@ -85,8 +83,8 @@ else (state,"@",l,lout);
 fun indent(state : int*int*int*int*int*char*char*char,n, l : char list, lout : string list) = case l of
 [] => (state,"",l,lout)
 | c :: xs => if c = #">" then indent((0, #2 state + 1, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),n+1,xs,lout)
-else if n > #2 state then let val s= if indentation(state)>0 then "</p>" else "" val temp=matchpattern((1, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state,c),xs,lout) in (#1 temp, s ^ addquote(n- ( #2 state),"<p>") ^ #2 temp,#3 temp,#4 temp) end
-else matchpattern((1, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state,c),xs,lout);
+else if n > #2 state then let val s= if indentation(state)>0 then "</p>" else "" in ((1,#2 state,#3 state,#4 state, #5 state,#6 state, #7 state, #8 state), s ^ addquote(n- ( #2 state),"<p>") ,l,lout) end
+else (1, #2 state, #3 state, #4 state, #5 state,#6 state, #7 state, #8 state),l,lout);
 fun activateindentation(state : int*int*int*int*int*char*char*char,l : char list, lout : string list) =indent((0, #2 state, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),1,l,lout);
 
 fun underline(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = (state,"",l,lout);
