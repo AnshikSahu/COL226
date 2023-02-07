@@ -103,7 +103,7 @@ fun parse( state : int*int*int*int*int*char*char*char, l : char list , lout : st
 fun main() = parse((1,0,0,0,0, #"\n", #"\n", #"\n"),l,[]);
 fun write( strings) =let val output = TextIO.openOut "output.txt"
         fun writestrings [] = TextIO.closeOut output
-          | writestrings (x::xs) = (TextIO.output (file, x ); writestrings xs) in writestrings(strings) end;
-val _=write_to_file (#4 main());
+          | writestrings (x::xs) = (TextIO.output (output, x ); writestrings xs) in writestrings(strings) end;
+val _=write(#4 main());
 val _ = TextIO.closeOut output;
 val _ = TextIO.closeIn input;
