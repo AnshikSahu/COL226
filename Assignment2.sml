@@ -22,8 +22,8 @@ fun activatecodeblock(state : int*int*int*int*int*char*char*char, l : char list,
 fun deactivatecodeblock(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((1, #2 state, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),"</code></pre>\n",l,lout);
 fun checkdigit(c : char)= ord(c) > 47 andalso ord(c) < 58;
 fun activatelist(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((#1 state, #2 state, #3 state, 1, #5 state, #6 state, #7 state, #8 state),"", l,lout);
-fun addorderedlist(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((#1 state, #2 state, #3 state, (#4 state)*2 + 1, #5 state, #6 state, #7 state, #8 state),"<ol>", l ,lout);
-fun addunorderedlist(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((#1 state, #2 state, #3 state, (#4 state)*2, #5 state, #6 state, #7 state, #8 state),"<ul>", l,lout);
+fun addorderedlist(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((#1 state, #2 state, #3 state, (#4 state)*2 + 1, #5 state, #6 state, #7 state, #8 state),"<ol><li>", l ,lout);
+fun addunorderedlist(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((#1 state, #2 state, #3 state, (#4 state)*2, #5 state, #6 state, #7 state, #8 state),"<ul><li>", l,lout);
 fun checkforlist(l : char list) = if l=[] then (false,l) else if hd(l)= #"." then (true,tl(l)) else if checkdigit(hd(l)) then checkforlist(tl(l)) else (false,l);
 fun checklist(l : char list) = let val temp=checkforlist(l) in #1 temp end;
 fun sepratelist(l : char list) = let val temp= checkforlist(l) in #2 temp end;
