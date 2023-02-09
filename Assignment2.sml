@@ -45,6 +45,11 @@ fun deactivatebold(state : int*int*int*int*int*char*char*char,l : char list,lout
 fun activateitalic(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = ((1, #2 state, #3 state, #4 state, #5 state + 2, #6 state, #7 state, #8 state),"<i>", l,lout);
 fun deactivateitalic(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = ((1, #2 state, #3 state, #4 state, #5 state - 2, #6 state, #7 state, #8 state),"</i>",l,lout);
 
+fun activateunderline(state : int*int*int*int*int*char*char*char,l : char list, lout : string list) = ((#1 state, #2 state, #3 state, #4 state, #5 state div 8 + 4 + #5 state mod 4, #6 state, #7 state, #8 state),"<u>",l,lout);
+
+fun createlink(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = (state,"", l, lout);
+fun activatelink(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = createlink((#1 state, #2 state, #3 state, #4 state, #5 state div 64 + 32 + #5 state mod 32, #6 state, #7 state, #8 state), l,lout);
+
 fun deactivateunderline(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = ((#1 state, #2 state, #3 state, #4 state, #5 state - 4, #6 state, #7 state, #8 state),"</u>", l,lout);
 
 fun activateparagraph(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = ((1, #2 state, #3 state, #4 state, #5 state div 16 + 8 + #5 state mod 8,#"\n", #6 state, #7 state),"<p>", #8 state :: l,lout);
@@ -87,6 +92,8 @@ else if (paragraphactive(state) orelse headingactive(state)) andalso deciding(st
 if #8 state= #"*" then if boldactive(state) then deactivatebold(state,l,lout) else activatebold(state,l,lout)
 else if italicactive(state) then deactivateitalic((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #6 state, #7 state),#8 state :: l, lout)
 else activateitalic((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #6 state, #7 state),#8 state :: l, lout)
+else if (paragraphactive(state) orelse headingactive(state)) andalso reading(state) then activateunderline(state)
+else if underlineactive(state) andalso #8 state = #"_" and hd(l) = #" " then deactivateunderline(state)
 else (state,Char.toString(#8 state),l,lout);
 
 
@@ -95,11 +102,6 @@ else (state,Char.toString(#8 state),l,lout);
 
 
 
-fun underline(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = (state,"",l,lout);
-fun activateunderline(state : int*int*int*int*int*char*char*char,l : char list, lout : string list) = underline((#1 state, #2 state, #3 state, #4 state, #5 state div 8 + 4 + #5 state mod 4, #6 state, #7 state, #8 state),l,lout);
-
-fun createlink(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = (state,"", l, lout);
-fun activatelink(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = createlink((#1 state, #2 state, #3 state, #4 state, #5 state div 64 + 32 + #5 state mod 32, #6 state, #7 state, #8 state), l,lout);
 
 fun append( state : int*int*int*int*int*char*char*char, sentence,lin : char list, lout : string list) = (state,lin, sentence :: lout);
 
