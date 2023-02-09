@@ -2,6 +2,7 @@ val input = TextIO.openIn "input.txt";
 val l= explode(TextIO.inputAll input);
 fun deciding(state : int*int*int*int*int*char*char*char) = #1 state = 0;
 fun reading(state : int*int*int*int*int*char*char*char) = #1 state = 1;
+fun ignoring(state : int*int*int*int*int*char*char*char) = #1 state = ~1;
 fun linkactive(state : int*int*int*int*int*char*char*char) = (#5 state div 32) mod 2 = 1;
 fun indentation(state : int*int*int*int*int*char*char*char) = #2 state;
 fun headingactive(state : int*int*int*int*int*char*char*char) = #3 state>0;
@@ -17,6 +18,8 @@ fun deacactivateindentation(state : int*int*int*int*int*char*char*char, l : char
 fun increaseheadinglevel(state : int*int*int*int*int*char*char*char,l : char list,lout : string list) =((0, #2 state, #3 state + 1, #4 state, #5 state, #6 state, #7 state, #8 state),"", l ,lout);
 fun addheading(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ( (1,#2 state,#3 state,#4 state, #5 state, #6 state, #7 state, #8 state), "<h" ^ Int.toString(#3 state) ^ ">", l,lout);
 fun deactivateheading(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((1, #2 state, 0, #4 state, #5 state, #6 state, #7 state, #8 state),"</h" ^ Int.toString(#3 state) ^ ">", l,lout );
+fun activatecodeblock(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((~1, #2 state, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),"<pre><code>",l,lout);
+fun deactivatecodeblock(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((1, #2 state, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),"</code></pre>\n",l,lout);
 
 fun activatelist(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((#1 state, #2 state, #3 state, 1, #5 state, #6 state, #7 state, #8 state),"", l,lout);
 fun addorderedlist(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((#1 state, #2 state, #3 state, (#4 state)*2 + 1, #5 state, #6 state, #7 state, #8 state),"<ol>", l ,lout);
@@ -65,8 +68,11 @@ val s=(1, n , #3 st,#4 st,#5 st, #6 st, #7 st, #8 st)
 in (s, #2 temp1 ^ #2 temp2 ^ #2 temp3 ^ #2 temp4 ^ #2 temp5 ^ addquote(n- ( #2 ( #1 temp5)),"") ,l,lout) end
 else ((1, #2 state, #3 state, #4 state, #5 state,#6 state, #7 state, #8 state),"",l,lout);
 fun activateindentation(state : int*int*int*int*int*char*char*char,l : char list, lout : string list) =indent((0, #2 state , #3 state, #4 state,  #5 state, #6 state, #7 state, #8 state),1,l,lout);
+fun findlinktype2(l,s)= if l=[] then (s^"Error2",l) else if hd(l)= #"\n" then (s^"Error2",l) else if hd(l)= #">" then (s,tl(l)) else findlinktype2(tl(l),s^Char.toString(hd(l)));
+fun activatelinktype2(state : int*int*int*int*int*char*char*char,l : char list, lout : string list)= let val temp=findlinktype2(l,"") in (state,"<a href=\"" ^ #1 temp ^ "\">" ^ #1 temp ^ "</a>", #2 temp,lout) end;
 fun errorcheck(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = if #1 state <>1 then if linkactive(state) then let val temp=linkdeactivate(state,"",l,lout) in (#1 temp, "ERROR1"^ #2 temp,#3 temp ,#4 temp) end
  else (state,"ERROR2", l,lout) else (state,"", l,lout);
+fun checkfortab(l)= if l=[] then false else if hd(l) <> #" " then false else if tl(l)=[] then false else if hd(tl(l))<> #" " then false else if tl(tl(l))=[] then false else if hd(tl(tl(l))) <> #" " then false else if tl(tl(tl(l)))=[] then false else if hd(tl(tl(tl(l))))<> #" " then false else true;
 fun reset(state : int*int*int*int*int*char*char*char, str, l, lout : string list) = let val temp=if headingactive(state) then deactivateheading(state,l,lout) else (state,"",l,lout) in(#1 temp,str^ #2 temp ^ "\n", #3 temp,#4 temp) end;
 fun completereset(state : int*int*int*int*int*char*char*char, str, l, lout : string list) = let 
 val temp1 = if underlineactive(state)  then deactivateunderline(state, l,lout) else (state,"", l,lout)
@@ -78,7 +84,11 @@ val temp6 = if listactive(#1 temp5) then endpreviouslist(#1 temp5, #3 temp5, #4 
 val temp7 = if headingactive(#1 temp6) then deactivateheading(#1 temp6, #3 temp6,#4 temp6) else (#1 temp6,"", #3 temp6, #4 temp6)
 val temp8 = if indentation(#1 temp7) > 0 then deacactivateindentation(#1 temp7, #3 temp7, #4 temp7) else (#1 temp7,"",#3 temp7, #4 temp7)
  in (#1 temp8, str ^ #2 temp1 ^ #2 temp2 ^ #2 temp3 ^ #2 temp4 ^ #2 temp5 ^ #2 temp6 ^ #2 temp7 ^ #2 temp8 ^ "\n", #3 temp8, #4 temp8 ) end;
-fun matchpattern(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = if #8 state = #"\n" andalso tableactive(state) = false andalso paragraphactive(state)= false then  reset(errorcheck(state, l,lout)) else if #7 state= #"\n" andalso #8 state= #"\n" then completereset(errorcheck(state, l,lout))
+fun matchpattern(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = 
+if #8 state= #"\n" andalso checkfortab(l) andalso ignoring(state)=false then activatecodeblock(state,l,lout)
+else if #8 state= #"\n" andalso ignoring(state) andalso checkfortab(l)=false then deactivatecodeblock(state,l,lout)
+else if ignoring(state) then (state,Char.toString(#8 state),l,lout)
+else if #8 state = #"\n" andalso tableactive(state) = false andalso paragraphactive(state)= false then  reset(errorcheck(state, l,lout)) else if #7 state= #"\n" andalso #8 state= #"\n" then completereset(errorcheck(state, l,lout))
 else if #7 state= #"\n" andalso #8 state = #"#" then let val temp1= completereset(errorcheck(state,l,lout)) val temp2=increaseheadinglevel(#1 temp1,#3 temp1,#4 temp1) in (#1 temp2, #2 temp1 ^ #2 temp2, #3 temp2, #4 temp2) end
 else if deciding(state) andalso headingactive(state) andalso #8 state = #"#" then increaseheadinglevel(state, l,lout)
 else if deciding(state) andalso headingactive(state) andalso #7 state = #"#" then 
@@ -97,7 +107,9 @@ else if underlineactive(state) andalso #8 state = #" " then deactivateunderline(
 else if (paragraphactive(state) orelse headingactive(state)) andalso reading(state) andalso underlineactive(state)=false andalso #8 state = #"_"  then activateunderline(state,l,lout)
 else if paragraphactive(state)=false andalso #8 state= #"-" then if l=[] then (state,"Error3",l,lout) else if hd(l)<> #"-" then (state,"Error3",l,lout) else if tl(l)=[] then (state,"Error3",l,lout) else if hd(tl(l))<> #"-" then (state,"Error3",l,lout) else ((state,"<hr>",tl(tl(l)),lout))
 else if paragraphactive(state) andalso #8 state= #"-" then if l=[] then (state,"Error3",l,lout) else if hd(l)<> #"-" then (state,"Error3",l,lout) else if tl(l)=[] then (state,"Error3",l,lout) else if hd(tl(l))<> #"-" then (state,"Error3",l,lout) else let val temp=deactivateparagraph(state,tl(tl(l)),lout) in (#1 temp,#2 temp ^ "<hr>", #3 temp,#4 temp) end
-else if paragraphactive(state) andalso tableactive(state)=false andalso #8 state= #"<" then if l=[] then (state,"Error4",l,lout) else if hd(l)<> #"<" then (state,"Error4",l,lout) else activatetable(state,tl(l),lout)
+else if paragraphactive(state) andalso tableactive(state)=false andalso #8 state= #"<" then if l=[] then (state,"Error4",l,lout) else if hd(l)= #"<" then activatetable(state,tl(l),lout)
+else if hd(l)= #"h" then if tl(l) = [] then (state,"Error2",l,lout) else if hd(tl(l))<> #"t" then (state,"Error2",l,lout) else if tl(tl(l))=[] then (state,"Error2",l,lout) else if hd(tl(tl(l)))<> #"t" then (state,"Error2",l,lout) else if tl(tl(tl(l)))=[] then (state,"Error2",l,lout) else if hd(tl(tl(tl(l)))) <> #"p" then (state,"Error2",l,lout) else activatelinktype2(state,l,lout)
+else (state,"Error4",l,lout)
 else if tableactive(state) andalso #8 state= #"\n" then (state,"</TD></TR>\n",l,lout)
 else if tableactive(state) andalso #8 state= #"|" then (state,"</TD><TD>",l,lout)
 else if tableactive(state) andalso #8 state= #">" then if l=[] then (state,"Error6",l,lout) else if hd(l)<> #">" then (state,"Error6",l,lout) else let val s=if #7 state<> #"\n" then "</TD></TR>" else ""  val temp=tabledeactivate(state,tl(l),lout) in (#1 temp,s ^ #2 temp, #3 temp, #4 temp) end
