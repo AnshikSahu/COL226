@@ -93,7 +93,7 @@ if #8 state= #"*" then if boldactive(state) then deactivatebold(state,l,lout) el
 else if italicactive(state) then deactivateitalic((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #6 state, #7 state),#8 state :: l, lout)
 else activateitalic((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #6 state, #7 state),#8 state :: l, lout)
 else if (paragraphactive(state) orelse headingactive(state)) andalso reading(state) then activateunderline(state)
-else if underlineactive(state) andalso #8 state = #"_" and hd(l) = #" " then deactivateunderline(state)
+else if underlineactive(state) andalso #8 state = #"_" and (hd(l) = #" " orelse hd(l) = #"\n") then deactivateunderline(state)
 else (state,Char.toString(#8 state),l,lout);
 
 
