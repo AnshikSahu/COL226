@@ -1,4 +1,4 @@
-val input = TextIO.openIn "input.txt";
+val input = TextIO.openIn "input.mdt";
 val l= explode(TextIO.inputAll input);
 fun deciding(state : int*int*int*int*int*char*char*char) = #1 state = 0;
 fun reading(state : int*int*int*int*int*char*char*char) = #1 state = 1;
@@ -129,7 +129,7 @@ fun parse( state : int*int*int*int*int*char*char*char, l : char list , lout : st
  [] => append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #"\n" , #"\n" ),l, lout))  
 | c :: xs => parse(append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state, c),xs, lout))) end;
 fun main() = parse((1,0,0,0,0, #"\n", #"\n", #"\n"),l,[""]);
-fun write(lout) =let val output = TextIO.openOut "output.txt"
+fun write(lout) =let val output = TextIO.openOut "output.html"
         fun writestrings [] = TextIO.closeOut output
           | writestrings (x::xs) = (TextIO.output (output, x ); writestrings xs) in writestrings(lout) end;
 fun reverse(state : int*int*int*int*int*char*char*char, l : char list , lout : string list) = rev(lout);
