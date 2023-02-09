@@ -1,1 +1,9 @@
-<p><a href="httpefwhkufkgw">httpefwhkufkgw</a></p>
+
+<h5> Markdown--: Essentials</h5>
+
+<ol><p> This HTML file <tt>mdtabError32023.md.html</tt> was produced by running<pre><code>    [markdown] [jg] on the text file <tt>mdtab-2023.md</tt>.\n    Use the [text][md] file to test your own program.</code></pre>
+</li>
+<li>. To know about markdown go to the <a href="jg">markdown syntax</a>\n</li>
+   page maintained by John Gruber. Many of the simplifications listed\n   below also refer to Gruber's document. \n</li>
+<li>. Recognize and leave all inline HTML tags unchanged.\n</li>
+<li>. <b>Headings.</b> Do not implement the underlining feature of \n   markdown. Implement only the headings defined by hashes. \n   Hence you must implement the 6 levels of headings which \n   are the levels shown in\n   the centered lines at the beginning of this document. The</p></ol>

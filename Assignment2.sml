@@ -20,17 +20,18 @@ fun addheading(state : int*int*int*int*int*char*char*char, l : char list,lout : 
 fun deactivateheading(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((1, #2 state, 0, #4 state, #5 state, #6 state, #7 state, #8 state),"</h" ^ Int.toString(#3 state) ^ ">", l,lout );
 fun activatecodeblock(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((~1, #2 state, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),"<pre><code>",l,lout);
 fun deactivatecodeblock(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((1, #2 state, #3 state, #4 state, #5 state, #6 state, #7 state, #8 state),"</code></pre>\n",l,lout);
-
+fun checkdigit(c : char)= ord(c) > 47 andalso ord(c) < 58;
 fun activatelist(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((#1 state, #2 state, #3 state, 1, #5 state, #6 state, #7 state, #8 state),"", l,lout);
 fun addorderedlist(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((#1 state, #2 state, #3 state, (#4 state)*2 + 1, #5 state, #6 state, #7 state, #8 state),"<ol>", l ,lout);
 fun addunorderedlist(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = ((#1 state, #2 state, #3 state, (#4 state)*2, #5 state, #6 state, #7 state, #8 state),"<ul>", l,lout);
-fun checkforlist(state : int*int*int*int*int*char*char*char, l : char list,lout : string list) = (state,"", l,lout);
+fun checkforlist(l : char list) = if l=[] then (false,l) else if hd(l)= #"." then (true,tl(l)) else if checkdigit(hd(l)) then checkforlist(tl(l)) else (false,l);
+fun checklist(l : char list) = let val temp=checkforlist(l) in #1 temp end;
+fun sepratelist(l : char list) = let val temp= checkforlist(l) in #2 temp end;
 fun endpreviouslist(state : int*int*int*int*int*char*char*char,l : char list,lout : string list) = if (#4 state div 2) mod 2 = 1 then 
 if #4 state mod 2 = 1 then ((#1 state, #2 state, #3 state, 0, #5 state, #6 state, #7 state, #8 state),"</ol>", l,lout)
 else ((#1 state, #2 state, #3 state, 0, #5 state, #6 state, #7 state, #8 state),"</ul>", l,lout)
 else if #4 state mod 2 = 1 then ((#1 state, #2 state, #3 state, #4 state div 2, #5 state, #6 state, #7 state, #8 state),"</ol>", l,lout)
 else ((#1 state, #2 state, #3 state, #4 state div 2, #5 state, #6 state, #7 state, #8 state),"</ul>", l,lout); 
-
 fun activatebold(state : int*int*int*int*int*char*char*char,l : char list,lout : string list) = ((1, #2 state, #3 state, #4 state, #5 state + 1, #6 state, #7 state, #8 state),"<b>",l,lout);
 fun deactivatebold(state : int*int*int*int*int*char*char*char,l : char list,lout : string list) = ((1, #2 state, #3 state, #4 state, #5 state - 1, #6 state, #7 state, #8 state),"</b>",l,lout);
 fun activateitalic(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = ((1, #2 state, #3 state, #4 state, #5 state + 2, #6 state, #7 state, #8 state),"<i>", l,lout);
@@ -85,10 +86,18 @@ val temp7 = if headingactive(#1 temp6) then deactivateheading(#1 temp6, #3 temp6
 val temp8 = if indentation(#1 temp7) > 0 then deacactivateindentation(#1 temp7, #3 temp7, #4 temp7) else (#1 temp7,"",#3 temp7, #4 temp7)
  in (#1 temp8, str ^ #2 temp1 ^ #2 temp2 ^ #2 temp3 ^ #2 temp4 ^ #2 temp5 ^ #2 temp6 ^ #2 temp7 ^ #2 temp8 ^ "\n", #3 temp8, #4 temp8 ) end;
 fun matchpattern(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = 
-if #8 state= #"\n" andalso checkfortab(l) andalso ignoring(state)=false then activatecodeblock(state,l,lout)
+if #8 state= #"\n" andalso checkfortab(l) andalso listactive(state) andalso checkdigit(#8 state) andalso checklist(l) then addorderedlist(state,sepratelist(l),lout)
+else if #8 state= #"\n" andalso checkfortab(l) andalso listactive(state) andalso #8 state= #"-" andalso l<>[] andalso hd(l)= #"-" andalso (tl(l)=[] orelse hd(tl(l))<> #"-") then addunorderedlist(state,tl(tl(l)),lout)
+else if #8 state= #"\n" andalso checkfortab(l) andalso ignoring(state)=false then activatecodeblock(state,l,lout)
 else if #8 state= #"\n" andalso ignoring(state) andalso checkfortab(l)=false then deactivatecodeblock(state,l,lout)
 else if ignoring(state) then (state,Char.toString(#8 state),l,lout)
-else if #8 state = #"\n" andalso tableactive(state) = false andalso paragraphactive(state)= false then  reset(errorcheck(state, l,lout)) else if #7 state= #"\n" andalso #8 state= #"\n" then completereset(errorcheck(state, l,lout))
+else if #8 state = #"\n" andalso tableactive(state) = false andalso paragraphactive(state)= false andalso listactive(state)=false then  reset(errorcheck(state, l,lout)) 
+else if #7 state= #"\n" andalso #8 state= #"\n" andalso listactive(state)=false then completereset(errorcheck(state, l,lout))
+else if #6 state= #"\n" andalso #7 state= #"\n" andalso #8 state= #"\n" then completereset(errorcheck(state, l,lout))
+else if listactive(state) andalso #7 state= #"\n" andalso ((checkdigit(#8 state) andalso checklist(l)) orelse ( #8 state= #"-" andalso l<>[] andalso hd(l)= #"-" andalso (tl(l)=[] orelse hd(tl(l))<> #"-"))) then (state,"<li>",l,lout)
+else if listactive(state) andalso #7 state= #"\n" andalso #8 state= #"\n" then (state,"</li>\n",l,lout)
+else if listactive(state)=false andalso checkdigit(#8 state) andalso #7 state = #"\n" andalso checklist(l) then let val temp1=activatelist(state,l,lout) in addorderedlist(#1 temp1,sepratelist(#3 temp1),#4 temp1) end
+else if listactive(state)=false andalso #7 state= #"\n" andalso #8 state= #"-" andalso l<>[] andalso hd(l)= #"-" andalso (tl(l)=[] orelse hd(tl(l))<> #"-") then let val temp1=activatelist(state,l,lout) in addunorderedlist(#1 temp1,tl(tl(#3 temp1)),#4 temp1) end
 else if #7 state= #"\n" andalso #8 state = #"#" then let val temp1= completereset(errorcheck(state,l,lout)) val temp2=increaseheadinglevel(#1 temp1,#3 temp1,#4 temp1) in (#1 temp2, #2 temp1 ^ #2 temp2, #3 temp2, #4 temp2) end
 else if deciding(state) andalso headingactive(state) andalso #8 state = #"#" then increaseheadinglevel(state, l,lout)
 else if deciding(state) andalso headingactive(state) andalso #7 state = #"#" then 
@@ -107,15 +116,13 @@ else if underlineactive(state) andalso #8 state = #" " then deactivateunderline(
 else if (paragraphactive(state) orelse headingactive(state)) andalso reading(state) andalso underlineactive(state)=false andalso #8 state = #"_"  then activateunderline(state,l,lout)
 else if paragraphactive(state)=false andalso #8 state= #"-" then if l=[] then (state,"Error3",l,lout) else if hd(l)<> #"-" then (state,"Error3",l,lout) else if tl(l)=[] then (state,"Error3",l,lout) else if hd(tl(l))<> #"-" then (state,"Error3",l,lout) else ((state,"<hr>",tl(tl(l)),lout))
 else if paragraphactive(state) andalso #8 state= #"-" then if l=[] then (state,"Error3",l,lout) else if hd(l)<> #"-" then (state,"Error3",l,lout) else if tl(l)=[] then (state,"Error3",l,lout) else if hd(tl(l))<> #"-" then (state,"Error3",l,lout) else let val temp=deactivateparagraph(state,tl(tl(l)),lout) in (#1 temp,#2 temp ^ "<hr>", #3 temp,#4 temp) end
-else if paragraphactive(state) andalso tableactive(state)=false andalso #8 state= #"<" then if l=[] then (state,"Error4",l,lout) else if hd(l)= #"<" then activatetable(state,tl(l),lout)
-else if hd(l)= #"h" then if tl(l) = [] then (state,"Error2",l,lout) else if hd(tl(l))<> #"t" then (state,"Error2",l,lout) else if tl(tl(l))=[] then (state,"Error2",l,lout) else if hd(tl(tl(l)))<> #"t" then (state,"Error2",l,lout) else if tl(tl(tl(l)))=[] then (state,"Error2",l,lout) else if hd(tl(tl(tl(l)))) <> #"p" then (state,"Error2",l,lout) else activatelinktype2(state,l,lout)
-else (state,"Error4",l,lout)
+else if paragraphactive(state) andalso tableactive(state)=false andalso #8 state= #"<" andalso l<>[] andalso hd(l)= #"<" then activatetable(state,tl(l),lout)
+else if paragraphactive(state) andalso #8 state= #"<" andalso l<>[] then if hd(l)<> #"h" then (state,Char.toString(#8 state),l,lout) else  if tl(l) = [] then (state,"Error2",l,lout) else if hd(tl(l))<> #"t" then (state,Char.toString(#8 state),l,lout) else if tl(tl(l))=[] then (state,"Error2",l,lout) else if hd(tl(tl(l)))<> #"t" then (state,Char.toString(#8 state),l,lout) else if tl(tl(tl(l)))=[] then (state,"Error2",l,lout) else if hd(tl(tl(tl(l)))) <> #"p" then (state,Char.toString(#8 state),l,lout) else activatelinktype2(state,l,lout)
 else if tableactive(state) andalso #8 state= #"\n" then (state,"</TD></TR>\n",l,lout)
 else if tableactive(state) andalso #8 state= #"|" then (state,"</TD><TD>",l,lout)
 else if tableactive(state) andalso #8 state= #">" then if l=[] then (state,"Error6",l,lout) else if hd(l)<> #">" then (state,"Error6",l,lout) else let val s=if #7 state<> #"\n" then "</TD></TR>" else ""  val temp=tabledeactivate(state,tl(l),lout) in (#1 temp,s ^ #2 temp, #3 temp, #4 temp) end
 else if paragraphactive(state) andalso #8 state= #"[" then activatelink(state,l,lout)
 else if paragraphactive(state)= false then activateparagraph(state,l,lout)
-
 else (state,Char.toString(#8 state),l,lout);
 fun append( state : int*int*int*int*int*char*char*char, sentence,lin : char list, lout : string list) = (state,lin, sentence :: lout);
 fun parse( state : int*int*int*int*int*char*char*char, l : char list , lout : string list) =let val _=print(Int.toString(#1 state) ^ Int.toString(#2 state) ^ Int.toString(#3 state) ^ Int.toString(#4 state) ^ Int.toString(#5 state) ^ Char.toString(#8 state) ^ hd(lout) ^ "\n") in case l of 
