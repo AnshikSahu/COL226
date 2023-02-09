@@ -103,12 +103,8 @@ else if tableactive(state) andalso #8 state= #"|" then (state,"</TD><TD>",l,lout
 else if tableactive(state) andalso #8 state= #">" then if l=[] then (state,"Error6",l,lout) else if hd(l)<> #">" then (state,"Error6",l,lout) else let val s=if #7 state<> #"\n" then "</TD></TR>" else ""  val temp=tabledeactivate(state,tl(l),lout) in (#1 temp,s ^ #2 temp, #3 temp, #4 temp) end
 else if paragraphactive(state) andalso #8 state= #"[" then activatelink(state,l,lout)
 else if paragraphactive(state)= false then activateparagraph(state,l,lout)
+
 else (state,Char.toString(#8 state),l,lout);
-
-
-
-
-
 fun append( state : int*int*int*int*int*char*char*char, sentence,lin : char list, lout : string list) = (state,lin, sentence :: lout);
 fun parse( state : int*int*int*int*int*char*char*char, l : char list , lout : string list) =let val _=print(Int.toString(#1 state) ^ Int.toString(#2 state) ^ Int.toString(#3 state) ^ Int.toString(#4 state) ^ Int.toString(#5 state) ^ Char.toString(#8 state) ^ hd(lout) ^ "\n") in case l of 
  [] => append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #"\n" , #"\n" ),l, lout))  
