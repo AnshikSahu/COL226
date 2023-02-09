@@ -1,0 +1,79 @@
+<p><center>\n</p>
+<h1>Department of Computer Science and Engineering</h1>
+
+
+<h2> Programming Languages</h2>
+
+
+<h3> II Semester 2022-23</h3>
+
+
+<h4> Instructor: [S. Arun-Kumar]</h4>
+
+
+<h5> Assignment: MDT: A translator from Markdown--  to HTML text with tables</h5>
+<p></center>\n</p>
+
+<h6> Introduction</h6>
+
+<p>HTML is often too verbose and complicated for most static pages like this\none. Most writers of webError3pages require only the simplest HTML markError3ups\nwith the fewest possible options and even fewer special symbols. For\nsuch simple webError3pages it suffices to use a few simple symbols to\nformat the text written in a text editor (such as <i>gedit</i>, <i>Emacs</i> or even\n<i>notepad</i>) as an HTML document.\n</p>
+<p>These considerations led to the design of <i><a href="jg* which is a simple">markdown</a>\n</i></p>
+<p>program that converts text into HTML with a minimum number of \"markup\"\nsymbols. There are now several versions with various sophisticated\nfeatures that can do most things such as convert the markdown file\ninto HTML or LaTex or even directly into pdf.\n</p>
+<p>The original markdown did not support HTML tables. So we add that as\nan essential feature with its own markdown syntax along with some more\nsimplifications by stripping down and changing some functionalities. \n</p>
+
+<h5> Markdown--: Essentials</h5>
+
+<ol><li><p> This HTML file <tt>mdtabError32023.md.html</tt> was produced by running<pre><code>    [markdown] [jg] on the text file <tt>mdtab-2023.md</tt>.\n    Use the [text][md] file to test your own program.</code></pre>
+</li>
+<li>. To know about markdown go to the <a href="jg">markdown syntax</a>\n</li>
+   page maintained by John Gruber. Many of the simplifications listed\n   below also refer to Gruber's document. \n</li>
+<li>. Recognize and leave all inline HTML tags unchanged.\n</li>
+<li>. <b>Headings.</b> Do not implement the underlining feature of \n   markdown. Implement only the headings defined by hashes. \n   Hence you must implement the 6 levels of headings which \n   are the levels shown in\n   the centered lines at the beginning of this document. The\n   number of hashes at the beginning of the line indicates the \n   heading level.\n</li>
+<li>. Implement the following for pure text elements Error3Error3 \n   Use of double asterisks for <b>bolding</b> and single asterisks for\n   <i>italics</i>.\n   There is nothing in markdown for underlining Error3Error3 underError3scores are\n   used for italics and bolding as an alternative to\n   asterisks. Instead implement underlining as follows.\n   Example: \"\\<u>underlined\\ text\\ \"</u> produces <u>underlined text</u>).\n</li>
+<li>. <b>Horizontal Ruling</b>. Implement only the code corresponding to\n   the use of at least 3 consecutive hypens (</p><hr><p>) to produce\n   a horizontal line.\n</li>
+<li>. <b>Block quotes.</b> Implement only the emailError3style blockError3quoting\n   (i.e. every line in a block quote should begin with >, \n   otherwise it is not a block quote) along with the nested\n   blockError3quoting.\n</li>
+<li>. <b>Links.</b> Implement the direct href produced by the\n   using the \"\\<a href="">text\\</a>\n</li>
+]\\(http://url/of/the/link\\)\" syntax. Also implement the\n   automatic links feature e.g.\n</li>
+   \t     <a href="http://www.cse.iitd.ac.in/~sak">http://www.cse.iitd.ac.in/~sak</a>\n</li>
+   renders as <a href="http://www.cse.iitd.ac.in/~sak">http://www.cse.iitd.ac.in/~sak</a> which\n   provides the URL and the link to the URL.\n \n<li>. <b>Lists.</b> Implement \n</li>
+   Error3 <i>ordered lists</i> Error3Error3 as given by <a href="">John Gruber</a>\n</li>
+] <a href="">jg</a>\n</li>
+]. Pay particular <pre><code>     attention to his 1986 example relating to escape sequencing the\n     \".\" in case 1986 comes at the beginning of a line.</code></pre>
+   Error3 <i>unordered lists</i> Error3Error3 implement only the hyphen (as done here).\n</li>
+<li>. Implement tables from csv format. Make the simplifying assumption that a HTML table is always\n   centered. For example the following is\n</li>
+   \t     <CENTER><TABLE border=1>   \t     1</TD><TD>2</TD><TD>3</TD><TD>4</TD><TD>9</TD></TR>
+   \t     5</TD><TD>6</TD><TD>7</TD><TD>8</TD><TD>10</TD></TR>
+   \t     11</TD><TD>12</TD><TD>13</TD><TD>14</TD><TD>15</TD></TR>
+   \t     </TD></TR></TABLE></CENTER>\n</li>
+   a possible syntax for an HTML table that looks like\n</li>
+<CENTER><TABLE border=\"1\"><TR><TD>1</TD><TD>2</TD><TD>3</TD><TD>4</TD><TD>9</TD></TR>\n  <TR><TD>5</TD><TD>6</TD><TD>7</TD><TD>8</TD><TD>10</TD></TR>\n  <TR><TD>11</TD><TD>12</TD><TD>13</TD><TD>14</TD><TD>15</TD></TR>\n</TABLE></CENTER>\n</li>
+\t\n</p></ol>
+<h5> What you need to do.</h5>
+
+<p>Write a SML function <tt>mdt2html</tt> which takes a single input text\nfile <i>filename</i>.<tt>mdt</tt> and translates it into a HTML file\n<i>filename</i>.<tt>html</tt> that may be viewed on any browser. Your SML file\nshould be called <tt>mdt2html.sml</tt>\n</p>
+<p>You may use all the functionalities given in the <tt>TextIO</tt> and\nthe <tt>String</tt> modules of\nSML. While this requires using some of the impure features of SML,\nyour primary focus should be on not using the imperative constructs of\nSML Error3Error3 such as loops and assignment Error3Error3 unless absolutely essential.\n</p>
+
+<h5> Note:</h5>
+
+
+<ol><li><p> Since the above description is as clear as I can possibly make it, If you\n   still have some doubts, <font color=red>make reasonable design\n   decisions</font> and explicitly state them in a <tt>README.mdt</tt>\n   to be submitted along with your code.\n\t\n<li>. Upload and submit a single zip file called <i>entryno</i><tt>.zip</tt>\n   where <i>entryno</i> is your entry number. This file should contain the\n   two files <tt>mdt2html.sml</tt> and <tt>README.mdt</tt>.\n  \n<li>. You are <u>not</u>  allowed to change any of the names\n   or types given in the specification/signature. You are not even\n   allowed to change upperError3case letters to lowerError3case letters or\n   viceError3versa.\n</li>
+<li>. The evaluator may use automatic scripts to evaluate the\n   assignments (especially when the number of submissions is large) and\n   penalise you for deviating from the instructions.\n</li>
+<li>. You may define any new auxiliary functions/predicates you like in your code\n   besides those mentioned in the specification.\n</li>
+<li>. Your program should implement the given specifications/signature.\n</li>
+<li>. You need to think of the <i>most efficient</i> way of\n   implementing the various functions in a <i>functional</i> style given in the\n   specification/signature so that the function results satisfy their\n   definitions and properties.\n</li>
+<li>. In a large class or in a large assignment, it is not always\n   possible to specify every single design detail and clear each and every\n   doubt. So you need to submit a <tt>README.mdt</tt> file containing\n</li>
+</p></ol>
+<p>  Error3 all the decisions (they could be design decisions or<pre><code>    resolution of ambiguities present in the assignment) that you have\n    taken in order to solve the problem. Whether your decision is\n    ``reasonable'' will be evaluated by the evaluator of the\n    assignment.</code></pre>
+\t\n  Error3 a description of  which code you have<pre><code>    ``borrowed'' from various sources, along with the identity of the\n    source.</code></pre>
+\t\n  Error3 all sources that you have consulted in solving the assignment.\n</p>
+<p>  Error3 name changes or signature changes if any, along with a full<pre><code>    justification of why that was necessary.</code></pre>
+  \n<ol><li> The evaluator may look at your source code before evaluating it,\n   you must explain your algorithms in the form of comments, so that\n   the evaluator can understand what you have implemented.\n</li>
+<li>. Do <u>not</u> add any more decorations or functions or\n   userError3interfaces in order to impress the evaluator of the program.\n   Nobody is going to be impressed by it.\n</li>
+<li>0. There is a serious penalty for code similarity (similarity goes\n\tmuch deeper than variable names, indentation and line numbering). If\n\tit is felt that there is too much similarity in the code between any\n\ttwo persons, then both are going to be penalized equally. So please\n\tset permissions on your directories, so that others have no access\n\tto your programs.\n</li>
+<li>1. To reduce penalties, a clear section called \n\t<b>Acknowledgements</b> giving a detailed list of what you copied from\n\twhere or whom may be included in the <tt>README.mdt</tt> file.\n</li>
+</p></ol>
+
+<p><a href="">jg</a>\n</p>
+<p>]: https://daringfireball.net/projects/markdown/syntax\n</p>
+<p><a href="">md</a>\n</p>
+<p>]: https://www.cse.iitd.ac.in/~sak/courses/pl/2022Error323/ass/mdtabError32023.md</p>

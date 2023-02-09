@@ -71,8 +71,8 @@ else ((1, #2 state, #3 state, #4 state, #5 state,#6 state, #7 state, #8 state),"
 fun activateindentation(state : int*int*int*int*int*char*char*char,l : char list, lout : string list) =indent((0, #2 state , #3 state, #4 state,  #5 state, #6 state, #7 state, #8 state),1,l,lout);
 fun findlinktype2(l,s)= if l=[] then (s^"Error2",l) else if hd(l)= #"\n" then (s^"Error2",l) else if hd(l)= #">" then (s,tl(l)) else findlinktype2(tl(l),s^Char.toString(hd(l)));
 fun activatelinktype2(state : int*int*int*int*int*char*char*char,l : char list, lout : string list)= let val temp=findlinktype2(l,"") in (state,"<a href=\"" ^ #1 temp ^ "\">" ^ #1 temp ^ "</a>", #2 temp,lout) end;
-fun errorcheck(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = if #1 state <>1 then if linkactive(state) then let val temp=linkdeactivate(state,"",l,lout) in (#1 temp, "ERROR1"^ #2 temp,#3 temp ,#4 temp) end
- else (state,"ERROR2", l,lout) else (state,"", l,lout);
+fun errorcheck(state : int*int*int*int*int*char*char*char, l : char list, lout : string list) = if #1 state <>1 then if linkactive(state) then let val temp=linkdeactivate(state,"",l,lout) in (#1 temp, "ERROR2"^ #2 temp,#3 temp ,#4 temp) end
+ else (state,"ERROR1", l,lout) else (state,"", l,lout);
 fun checkfortab(l)= if l=[] then false else if hd(l) <> #" " then false else if tl(l)=[] then false else if hd(tl(l))<> #" " then false else if tl(tl(l))=[] then false else if hd(tl(tl(l))) <> #" " then false else if tl(tl(tl(l)))=[] then false else if hd(tl(tl(tl(l))))<> #" " then false else true;
 fun reset(state : int*int*int*int*int*char*char*char, str, l, lout : string list) = let val temp=if headingactive(state) then deactivateheading(state,l,lout) else (state,"",l,lout) in(#1 temp,str^ #2 temp ^ "\n", #3 temp,#4 temp) end;
 fun completereset(state : int*int*int*int*int*char*char*char, str, l, lout : string list) = let 
@@ -125,13 +125,20 @@ else if paragraphactive(state) andalso #8 state= #"[" then activatelink(state,l,
 else if paragraphactive(state)= false then activateparagraph(state,l,lout)
 else (state,Char.toString(#8 state),l,lout);
 fun append( state : int*int*int*int*int*char*char*char, sentence,lin : char list, lout : string list) = (state,lin, sentence :: lout);
-fun parse( state : int*int*int*int*int*char*char*char, l : char list , lout : string list) =let val _=print(Int.toString(#1 state) ^ Int.toString(#2 state) ^ Int.toString(#3 state) ^ Int.toString(#4 state) ^ Int.toString(#5 state) ^ Char.toString(#8 state) ^ hd(lout) ^ "\n") in case l of 
+fun parse( state : int*int*int*int*int*char*char*char, l : char list , lout : string list) = case l of 
  [] => append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #"\n" , #"\n" ),l, lout))  
-| c :: xs => parse(append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state, c),xs, lout))) end;
+| c :: xs => parse(append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state, c),xs, lout)));
 fun main() = parse((1,0,0,0,0, #"\n", #"\n", #"\n"),l,[""]);
-fun write(lout) =let val output = TextIO.openOut "output.html"
+fun write(lout) =let val output = TextIO.openOut "output1.html"
         fun writestrings [] = TextIO.closeOut output
           | writestrings (x::xs) = (TextIO.output (output, x ); writestrings xs) in writestrings(lout) end;
 fun reverse(state : int*int*int*int*int*char*char*char, l : char list , lout : string list) = rev(lout);
 val _=write(reverse(main()));
 val _ = TextIO.closeIn input;
+val input1= TextIO.openIn "output1.html";
+val output= TextIO.openOut "output.html";
+fun change(l , s ) = if length(l)=1 then s^"\n" else if ord(hd(l))=92 andalso hd(tl(l))= #"n" then change(tl(tl(l)),s) else change(tl(l),s^Char.toString(hd(l)));
+fun convert()= if TextIO.endOfStream( input1) then TextIO.output( output,"\n") else let val s= valOf(TextIO.inputLine(input1)) val _=TextIO.output(output,change(explode(s),"")) in convert() end;
+val _=convert();
+val _= TextIO.closeIn input1;
+val _= TextIO.closeOut output;
