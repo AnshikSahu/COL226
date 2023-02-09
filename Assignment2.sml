@@ -1,5 +1,3 @@
-val input = TextIO.openIn "input.mdt";
-val l= explode(TextIO.inputAll input);
 fun deciding(state : int*int*int*int*int*char*char*char) = #1 state = 0;
 fun reading(state : int*int*int*int*int*char*char*char) = #1 state = 1;
 fun ignoring(state : int*int*int*int*int*char*char*char) = #1 state = ~1;
@@ -128,17 +126,20 @@ fun append( state : int*int*int*int*int*char*char*char, sentence,lin : char list
 fun parse( state : int*int*int*int*int*char*char*char, l : char list , lout : string list) = case l of 
  [] => append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #"\n", #"\n" , #"\n" ),l, lout))  
 | c :: xs => parse(append(matchpattern((#1 state, #2 state, #3 state, #4 state, #5 state, #7 state, #8 state, c),xs, lout)));
-fun main() = parse((1,0,0,0,0, #"\n", #"\n", #"\n"),l,[""]);
+fun mdt2html(s : string)= let
+val input = TextIO.openIn s
+val l= explode(TextIO.inputAll input)
+fun main() = parse((1,0,0,0,0, #"\n", #"\n", #"\n"),l,[""])
 fun write(lout) =let val output = TextIO.openOut "output1.html"
         fun writestrings [] = TextIO.closeOut output
-          | writestrings (x::xs) = (TextIO.output (output, x ); writestrings xs) in writestrings(lout) end;
-fun reverse(state : int*int*int*int*int*char*char*char, l : char list , lout : string list) = rev(lout);
-val _=write(reverse(main()));
-val _ = TextIO.closeIn input;
-val input1= TextIO.openIn "output1.html";
-val output= TextIO.openOut "output.html";
-fun change(l , s ) = if length(l)=1 then s^"\n" else if ord(hd(l))=92 andalso hd(tl(l))= #"n" then change(tl(tl(l)),s) else change(tl(l),s^Char.toString(hd(l)));
-fun convert()= if TextIO.endOfStream( input1) then TextIO.output( output,"\n") else let val s= valOf(TextIO.inputLine(input1)) val _=TextIO.output(output,change(explode(s),"")) in convert() end;
-val _=convert();
-val _= TextIO.closeIn input1;
-val _= TextIO.closeOut output;
+          | writestrings (x::xs) = (TextIO.output (output, x ); writestrings xs) in writestrings(lout) end
+fun reverse(state : int*int*int*int*int*char*char*char, l : char list , lout : string list) = rev(lout)
+val _=write(reverse(main()))
+val _ = TextIO.closeIn input
+val input1= TextIO.openIn "output1.html"
+val output= TextIO.openOut "output.html"
+fun change(l , s ) = if length(l)=1 then s^"\n" else if ord(hd(l))=92 andalso hd(tl(l))= #"n" then change(tl(tl(l)),s) else change(tl(l),s^Char.toString(hd(l)))
+fun convert()= if TextIO.endOfStream( input1) then TextIO.output( output,"\n") else let val s= valOf(TextIO.inputLine(input1)) val _=TextIO.output(output,change(explode(s),"")) in convert() end
+val _=convert()
+val _= TextIO.closeIn input1
+val _= TextIO.closeOut output in "DONE" end;
